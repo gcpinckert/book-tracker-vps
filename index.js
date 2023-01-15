@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const config = require('./utils/config');
+const books = require('./models/books')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -28,7 +29,6 @@ app.post('/auth/login',
   }
 )
 
-
 app.listen(config.PORT, () => {
-  console.log(`We're up and running on port ${config.PORT} \\(^ヮ^)/`)
+  console.log(`We're up and running on port ${config.PORT} \\(^ヮ^)/`);
 })
