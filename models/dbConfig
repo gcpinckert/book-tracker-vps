@@ -1,0 +1,9 @@
+const config = require('../utils/config');
+
+module.exports = {
+  user: "postgres",
+  host: "localhost",
+  database: "books_tracker",
+  password: config.PSQL_PASS,
+  port: 5432,
+}
