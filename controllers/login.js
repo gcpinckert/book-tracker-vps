@@ -1,9 +1,9 @@
 const loginRouter = require('express').Router()
 
 const passport = require("passport")
-require("./models/passportConfig")(passport)
+require("../models/passportConfig")(passport)
 
-app.post('/signup', 
+loginRouter.post('/signup', 
   passport.authenticate("local-signup"), // add { session: false } argument to disable sessions
   (req, res, next) => {
     res.json({
@@ -12,7 +12,7 @@ app.post('/signup',
   }
 )
 
-app.post('/login', 
+loginRouter.post('/login', 
   passport.authenticate("local-login"), // add { session: false } argument to disable sessions
   (req, res, next) => {
     res.json({ user: req.user });
