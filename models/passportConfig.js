@@ -1,3 +1,4 @@
+const { decodeBase64 } = require("bcryptjs")
 const LocalStrategy = require("passport-local")
 const { usernameExists, createUser, matchPassword } = require("./signin")
 
@@ -46,4 +47,16 @@ module.exports = (passport) => {
       }
     )
   )
+
+  passport.serializeUser((user, cb) => {
+    process.nextTick(() => {
+      cb(null, { id: user.id, username: user.username })
+    })
+  })
+
+  passport.deserializeUser((user, cb) => {
+    process.nextTick(() => {
+      return cb(null, user)
+    })
+  })
 }

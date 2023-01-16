@@ -2,8 +2,12 @@ require('dotenv').config()
 
 const PORT = process.env.PORT
 const PSQL_PASS = process.env.PSQL_PASS
+const PSQL_CONNECTION_STRING = process.env.PSQL_CONNECTION_STRING
+const SESSION_SECRET = process.env.SESSION_SECRET
 
 module.exports = {
   PSQL_PASS,
-  PORT
+  PORT,
+  PSQL_CONNECTION_STRING,
+  SESSION_SECRET,
 }
