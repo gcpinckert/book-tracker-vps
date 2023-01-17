@@ -25,8 +25,8 @@ loginRouter.get('/login', (req, res, next) => {
 
 loginRouter.post('/login', 
   passport.authenticate("local-login", {
-    successRedirect: "/",
-    failureRedirect: "/auth/login",
+    // successRedirect: "/",
+    // failureRedirect: "/auth/login",
   }), // add { session: false } argument to disable sessions
   (req, res, next) => {
     res.json({ user: req.user });

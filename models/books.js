@@ -18,7 +18,7 @@ const books = {
 
   add: async ({title, author, description, rating}) => {
     const data = await client.query(
-      'INSERT INTO books (title, author, description, rating) VALUES($1, $2, $3, $4) RETURNING id, title;', 
+      'INSERT INTO books (title, author, description, rating) VALUES($1, $2, $3, $4) RETURNING id, title, author, description, rating;', 
       [title, author, description, rating]
     )
 

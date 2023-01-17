@@ -39,7 +39,7 @@ module.exports = (passport) => {
           const user = await usernameExists(username)
           if (!user) return done(null, false)
           const isMatch = await matchPassword(password, user.password)
-          if (!isMatch) return document(null, false)
+          if (!isMatch) return done(null, false)
           return done(null, {id: user.id, username: user.username})
         } catch (error) {
           return done(error, false)
