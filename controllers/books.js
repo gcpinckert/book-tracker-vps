@@ -1,20 +1,28 @@
 const booksRouter = require('express').Router()
 const books = require('../models/books')
 
-booksRouter.get('/:userId', async (req, res, next) => {
-  const usersBooks = await books.getAll(req.params.userId)
-  if (usersBooks) {
-    res.json(usersBooks)
+booksRouter.get('/', async (req, res, next) => {
+  const booksList = await books.getAll()
+  if (booksList) {
+    res.json(booksList)
   } else {
     res.send('<p>No books yet!</p>')
   }
 });
 
-booksRouter.post('/:userId', async (req, res, next) => {
+booksRouter.get('/:bookId', async (req, res, next) => {
+  const book = await books.get(req.params.bookId)
+  if (book) {
+    res.json(book)
+  } else {
+    res.status(404).send()
+  }
+});
+
+booksRouter.post('/', async (req, res, next) => {
   const body = req.body
 
   const book = {
-    userId: req.params.userId,
     title: body.title,
     author: body.author,
     description: body.description || '',

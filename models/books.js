@@ -1,8 +1,8 @@
 const client = require("./db.js")
 
 const books = {
-  getAll: async (userId) => {
-    const data = await client.query('SELECT * FROM books WHERE user_id = $1', [userId])
+  getAll: async () => {
+    const data = await client.query('SELECT * FROM books;')
     
     if (data.rowCount = 0) return false
     return data.rows;
@@ -16,10 +16,10 @@ const books = {
 
   },
 
-  add: async ({title, author, userId, description, rating}) => {
+  add: async ({title, author, description, rating}) => {
     const data = await client.query(
-      'INSERT INTO books (title, author, user_id, description, rating) VALUES($1, $2, $3, $4, $5) RETURNING id, title;', 
-      [title, author, userId, description, rating]
+      'INSERT INTO books (title, author, description, rating) VALUES($1, $2, $3, $4) RETURNING id, title;', 
+      [title, author, description, rating]
     )
 
     if (data.rowCount == 0) return false
