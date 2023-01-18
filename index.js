@@ -9,7 +9,7 @@ const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 
 app.use(cors())
-// TODO app.use(express.static('build'))
+app.use(express.static('build'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(middleware.requestLogger)
@@ -22,5 +22,5 @@ app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
 app.listen(config.PORT, () => {
-  console.log(`We're up and running on port ${config.PORT} \\(^ヮ^)/`);
+  logger.info(`We're up and running on port ${config.PORT} \\(^ヮ^)/`);
 })
