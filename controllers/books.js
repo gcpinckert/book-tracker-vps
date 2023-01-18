@@ -1,5 +1,18 @@
 const booksRouter = require('express').Router()
+const { response } = require('express')
+const jwt = require('jsonwebtoken')
 const books = require('../models/books')
+const config = require('../utils/config')
+const { findUserById } = require('../models/user')
+
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
+  }
+
+  return null
+}
 
 booksRouter.get('/', async (req, res, next) => {
   const booksList = await books.getAll()
@@ -21,6 +34,12 @@ booksRouter.get('/:bookId', async (req, res, next) => {
 
 booksRouter.post('/', async (req, res, next) => {
   const body = req.body
+  const token = getTokenFrom(req)
+  const decodedToken = jwt.verify(token, config.SESSION_SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+  const user = await findUserById(decodedToken.id)
 
   const book = {
     title: body.title,
