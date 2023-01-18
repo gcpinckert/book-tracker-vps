@@ -3,10 +3,6 @@ const config = require('../utils/config')
 const loginRouter = require('express').Router()
 const { usernameExists, createUser, matchPassword } = require('../models/user')
 
-
-// const passport = require("passport")
-// require("../models/passportConfig")(passport)
-
 loginRouter.post('/signup', async (req, res, next) => {
   const { username, password } = req.body
 
@@ -29,26 +25,14 @@ loginRouter.post('/signup', async (req, res, next) => {
     id: user.id,
   }
 
-  const token = jwt.sign(userForToken, config.SESSION_SECRET)
+  const token = jwt.sign(userForToken, config.SESSION_SECRET, { expiresIn: 60 * 60 })
 
   res.status(200).send({
     token,
     username: user.username,
     id: user.id
   })
-
-}
-  // passport.authenticate("local-signup", {
-  //   successRedirect: "/",
-  //   failureRedirect: "/auth/signup",
-  // }), // add { session: false } argument to disable sessions
-  // (req, res, next) => {
-  //   res.json({
-  //     user: req.user,
-  //   });
-  // }
-
-)
+})
 
 loginRouter.post('/login', async (req, res, next) => {
   const { username, password } = req.body
@@ -79,16 +63,9 @@ loginRouter.post('/login', async (req, res, next) => {
     username: user.username,
     id: user.id
   })
-}
-  // passport.authenticate("local-login", {
-  //   // successRedirect: "/",
-  //   // failureRedirect: "/auth/login",
-  // }), // add { session: false } argument to disable sessions
-  // (req, res, next) => {
-  //   res.json({ user: req.user });
-  // }
-)
+})
 
+// TODO: logout functionality
 // loginRouter.post('/logout', (req, res, next) => {
 //   req.logout((err) => {
 //     if (err) {return next(err)}
