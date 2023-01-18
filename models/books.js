@@ -4,25 +4,25 @@ const books = {
   getAll: async () => {
     const data = await client.query('SELECT * FROM books;')
     
-    if (data.rowCount = 0) return false
+    if (data.rowCount === 0) return false
     return data.rows;
   },
 
   get: async(bookId) => {
     const data = await client.query('SELECT * FROM books WHERE id = $1', [bookId]);
 
-    if (data.rowCount = 0) return false
+    if (data.rowCount === 0) return false
     return data.rows[0];
 
   },
 
-  add: async ({title, author, description, rating}) => {
+  add: async ({title, author, description, rating, user_id}) => {
     const data = await client.query(
-      'INSERT INTO books (title, author, description, rating) VALUES($1, $2, $3, $4) RETURNING id, title, author, description, rating;', 
-      [title, author, description, rating]
+      'INSERT INTO books (title, author, description, rating, user_id) VALUES($1, $2, $3, $4, $5)RETURNING id, title, author, description, rating, user_id;',
+      [title, author, description, rating, user_id]
     )
 
-    if (data.rowCount == 0) return false
+    if (data.rowCount === 0) return false
     return data.rows[0]
   },
 
@@ -44,14 +44,14 @@ const books = {
       [updates.title, updates.author, updates.description, updates.rating, updates.id]
     )
 
-    if (newData.rowCount == 0) return false
+    if (newData.rowCount === 0) return false
     return updates
   },
 
   delete: async (bookId) => {
     const data = await client.query('DELETE FROM books WHERE id = $1', [bookId])
 
-    if (data.rowCount == 0) return false
+    if (data.rowCount === 0) return false
     return true
   },
 }

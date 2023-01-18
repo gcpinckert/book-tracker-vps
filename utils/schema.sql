@@ -17,11 +17,7 @@ CREATE TABLE books (
 ALTER TABLE books
   ADD CHECK (rating >= 0 AND rating <= 5);
 
-CREATE TABLE users_books (
-  id serial PRIMARY KEY,
-  user_id integer REFERENCES users(id) ON DELETE CASCADE,
-  books_id integer REFERENCES books(id) ON DELETE CASCADE
-);
+-- 
 
 -- Uncomment and built the following tables when there's more time for a complex db
 
@@ -39,4 +35,11 @@ CREATE TABLE users_books (
 -- CREATE TABLE books_tags (
 --   books_id integer REFERENCES books(id) ON DELETE CASCADE,
 --   tags_id integer REFERENCES tags(id) ON DELETE CASCADE
+-- );
+
+-- Add this when we have time for added complexity of m:m
+-- CREATE TABLE users_books (
+--   id serial PRIMARY KEY,
+--   user_id integer REFERENCES users(id) ON DELETE CASCADE,
+--   books_id integer REFERENCES books(id) ON DELETE CASCADE
 -- );

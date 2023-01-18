@@ -32,7 +32,7 @@ const findUserById = async (id) => {
   const data = await client.query("SELECT * FROM users WHERE id=$1", [id])
 
   if (data.rowCount == 0) return false
-  return data.rows([0])
+  return data.rows[0]
 }
 
 module.exports = { usernameExists, createUser, matchPassword, findUserById } 

@@ -6,7 +6,8 @@ const config = require('../utils/config')
 const { findUserById } = require('../models/user')
 
 const getTokenFrom = request => {
-  const authorization = request.get('authorization')
+  const authorization = request.get('Authorization')
+  console.log(request)
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
     return authorization.substring(7)
   }
@@ -36,7 +37,7 @@ booksRouter.post('/', async (req, res, next) => {
   const body = req.body
   const token = getTokenFrom(req)
   const decodedToken = jwt.verify(token, config.SESSION_SECRET)
-  if (!decodedToken.id) {
+  if (!token || !decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
   const user = await findUserById(decodedToken.id)
@@ -46,6 +47,7 @@ booksRouter.post('/', async (req, res, next) => {
     author: body.author,
     description: body.description || '',
     rating: body.rating || 0,
+    user_id: user.id,
   }
 
   const newBook = await books.add(book)
@@ -57,6 +59,12 @@ booksRouter.post('/', async (req, res, next) => {
 });
 
 booksRouter.delete('/:bookId', async (req, res, next) => {
+  const token = getTokenFrom(req)
+  const decodedToken = jwt.verify(token, config.SESSION_SECRET)
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
   const success = await books.delete(req.params.bookId)
 
   if (success) {
