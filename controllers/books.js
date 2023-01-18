@@ -7,7 +7,6 @@ const { findUserById } = require('../models/user')
 
 const getTokenFrom = request => {
   const authorization = request.get('Authorization')
-  console.log(request)
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
     return authorization.substring(7)
   }
@@ -59,12 +58,15 @@ booksRouter.post('/', async (req, res, next) => {
 });
 
 booksRouter.delete('/:bookId', async (req, res, next) => {
-  const token = getTokenFrom(req)
-  const decodedToken = jwt.verify(token, config.SESSION_SECRET)
-  if (!token || !decodedToken.id) {
-    return response.status(401).json({ error: 'token missing or invalid' })
+  try {
+    const token = getTokenFrom(req)
+    const decodedToken = jwt.verify(token, config.SESSION_SECRET)
+    if (!token || !decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+  } catch (err) {
+    next(err)
   }
-
   const success = await books.delete(req.params.bookId)
 
   if (success) {
