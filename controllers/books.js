@@ -2,6 +2,8 @@ const booksRouter = require('express').Router()
 const { response } = require('express')
 const jwt = require('jsonwebtoken')
 const books = require('../models/books')
+const details = require('../models/details')
+const mongodb = require('../models/mgdb')
 const config = require('../utils/config')
 const { findUserById } = require('../models/user')
 
@@ -16,11 +18,7 @@ const getTokenFrom = request => {
 
 booksRouter.get('/', async (req, res, next) => {
   const booksList = await books.getAll()
-  if (booksList) {
-    res.json(booksList)
-  } else {
-    res.send('<p>No books yet!</p>')
-  }
+  res.json(booksList)
 });
 
 booksRouter.get('/:bookId', async (req, res, next) => {
@@ -31,6 +29,17 @@ booksRouter.get('/:bookId', async (req, res, next) => {
     res.status(404).send()
   }
 });
+
+booksRouter.get('/:bookId/cover', async (req, res, next) => {
+  const bookDetails = await mongodb.read(Number(req.params.bookId))
+  if (bookDetails) {
+    const coverUrl = `https://covers.openlibrary.org/b/id/${bookDetails.topResults[0].cover_i}-S.jpg`
+    res.send(coverUrl)
+  } else {
+    res.status(404).send()
+  }
+  
+})
 
 booksRouter.post('/', async (req, res, next) => {
   const body = req.body
@@ -49,8 +58,17 @@ booksRouter.post('/', async (req, res, next) => {
     user_id: user.id,
   }
 
+  const newDetails = {}
+  newDetails.topResults = await details.getSearchByTitleResults(book.title)
+  if (newDetails) {
+    newDetails.description = await details.getDescription(newDetails.topResults[0])
+  }
+  
+
   const newBook = await books.add(book)
   if (newBook) {
+    newDetails.psqlId = newBook.id
+    mongodb.add(newDetails)
     res.json(newBook)
   } else {
     res.status(400).send()
@@ -68,6 +86,7 @@ booksRouter.delete('/:bookId', async (req, res, next) => {
     next(err)
   }
   const success = await books.delete(req.params.bookId)
+  await books.remove(Number(req.params.bookId))
 
   if (success) {
     res.status(204).end()
